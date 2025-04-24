@@ -115,108 +115,112 @@ export default function NewSession() {
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-6">Start New Climbing Session</h2>
-      
-      {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
-          {error}
-        </div>
-      )}
-      
-      <div className="mb-4">
-        <label className="block text-gray-700 mb-2">Date</label>
-        <input
-          type="date"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
-          className="w-full px-4 py-2 border rounded-lg"
-        />
+    <div className="py-6">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-3">
+        <h2 className="text-2xl font-bold">Start New Climbing Session</h2>
       </div>
-      
-      {!showNewGymForm ? (
+
+      <div className="bg-white p-6 rounded-lg shadow">
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+            {error}
+          </div>
+        )}
+        
         <div className="mb-4">
-          <div className="flex justify-between items-center">
-            <label className="block text-gray-700 mb-2">Gym</label>
-            <button
-              type="button"
-              onClick={() => setShowNewGymForm(true)}
-              className="text-blue-500 text-sm"
-            >
-              Add New Gym
-            </button>
-          </div>
-          
-          <select
-            value={selectedGym}
-            onChange={(e) => setSelectedGym(e.target.value)}
+          <label className="block text-gray-700 mb-2">Date</label>
+          <input
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
             className="w-full px-4 py-2 border rounded-lg"
-            disabled={loading || gyms.length === 0}
-          >
-            {gyms.length === 0 && (
-              <option value="">No gyms available</option>
-            )}
-            
-            {gyms.map((gym) => (
-              <option key={gym.id} value={gym.id}>
-                {gym.name} - {gym.location}
-              </option>
-            ))}
-          </select>
+          />
         </div>
-      ) : (
-        <form onSubmit={handleNewGymSubmit} className="mb-4">
-          <h3 className="text-lg font-semibold mb-2">Add New Gym</h3>
-          
-          <div className="mb-3">
-            <label className="block text-gray-700 mb-1">Gym Name</label>
-            <input
-              type="text"
-              value={newGym.name}
-              onChange={(e) => setNewGym({ ...newGym, name: e.target.value })}
+        
+        {!showNewGymForm ? (
+          <div className="mb-4">
+            <div className="flex justify-between items-center">
+              <label className="block text-gray-700 mb-2">Gym</label>
+              <button
+                type="button"
+                onClick={() => setShowNewGymForm(true)}
+                className="text-blue-500 text-sm"
+              >
+                Add New Gym
+              </button>
+            </div>
+            
+            <select
+              value={selectedGym}
+              onChange={(e) => setSelectedGym(e.target.value)}
               className="w-full px-4 py-2 border rounded-lg"
-              placeholder="Central Rock"
-            />
-          </div>
-          
-          <div className="mb-3">
-            <label className="block text-gray-700 mb-1">Location</label>
-            <input
-              type="text"
-              value={newGym.location}
-              onChange={(e) => setNewGym({ ...newGym, location: e.target.value })}
-              className="w-full px-4 py-2 border rounded-lg"
-              placeholder="Glastonbury"
-            />
-          </div>
-          
-          <div className="flex space-x-2">
-            <button
-              type="button"
-              onClick={() => setShowNewGymForm(false)}
-              className="px-4 py-2 bg-gray-200 rounded-lg"
-              disabled={loading}
+              disabled={loading || gyms.length === 0}
             >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg"
-              disabled={loading}
-            >
-              {loading ? 'Adding...' : 'Add Gym'}
-            </button>
+              {gyms.length === 0 && (
+                <option value="">No gyms available</option>
+              )}
+              
+              {gyms.map((gym) => (
+                <option key={gym.id} value={gym.id}>
+                  {gym.name} - {gym.location}
+                </option>
+              ))}
+            </select>
           </div>
-        </form>
-      )}
-      
-      <button
-        onClick={handleCreateSession}
-        disabled={loading || !selectedGym}
-        className="w-full bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg mt-4"
-      >
-        {loading ? 'Creating...' : 'Start Session'}
-      </button>
+        ) : (
+          <form onSubmit={handleNewGymSubmit} className="mb-4">
+            <h3 className="text-lg font-semibold mb-2">Add New Gym</h3>
+            
+            <div className="mb-3">
+              <label className="block text-gray-700 mb-1">Gym Name</label>
+              <input
+                type="text"
+                value={newGym.name}
+                onChange={(e) => setNewGym({ ...newGym, name: e.target.value })}
+                className="w-full px-4 py-2 border rounded-lg"
+                placeholder="Central Rock"
+              />
+            </div>
+            
+            <div className="mb-3">
+              <label className="block text-gray-700 mb-1">Location</label>
+              <input
+                type="text"
+                value={newGym.location}
+                onChange={(e) => setNewGym({ ...newGym, location: e.target.value })}
+                className="w-full px-4 py-2 border rounded-lg"
+                placeholder="Glastonbury"
+              />
+            </div>
+            
+            <div className="flex space-x-2">
+              <button
+                type="button"
+                onClick={() => setShowNewGymForm(false)}
+                className="px-4 py-2 bg-gray-200 rounded-lg"
+                disabled={loading}
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg"
+                disabled={loading}
+              >
+                {loading ? 'Adding...' : 'Add Gym'}
+              </button>
+            </div>
+          </form>
+        )}
+        
+        <button
+          onClick={handleCreateSession}
+          disabled={loading || !selectedGym}
+          className="w-full bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg mt-4"
+        >
+          {loading ? 'Creating...' : 'Start Session'}
+        </button>
+      </div>
     </div>
   );
 }

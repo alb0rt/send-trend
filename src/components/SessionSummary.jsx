@@ -150,12 +150,12 @@ export default function SessionSummary() {
   const COLORS = ['#8dd1e1', '#82ca9d', '#a4de6c', '#d0ed57', '#ffc658', '#ff9800', '#ff5722', '#e91e63'];
   
   if (loading) {
-    return <div className="text-center p-8">Loading session summary...</div>;
+    return <div className="w-full py-6 text-center">Loading session summary...</div>;
   }
 
   if (error) {
     return (
-      <div className="text-center p-8">
+      <div className="w-full py-6 text-center">
         <p className="text-red-500">{error}</p>
         <Link 
           to="/" 
@@ -168,7 +168,7 @@ export default function SessionSummary() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
+    <div className="py-6">
       {sessionData && (
         <div className="mb-6">
           <h2 className="text-2xl font-bold">Session Summary</h2>
@@ -334,7 +334,7 @@ export default function SessionSummary() {
         </div>
       )}
       
-      <div className="flex gap-4">
+      <div className="flex flex-wrap gap-4">
         <Link
           to="/"
           className="px-6 py-2 bg-gray-200 rounded-lg"

@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../supabase';
 
-export default function Navbar() {
+export function Navbar() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -74,14 +74,28 @@ export default function Navbar() {
     return user?.email?.substring(0, 2).toUpperCase() || 'U';
   };
   
-  // If no user is authenticated, don't render the navbar
+  // If no user is authenticated, show simplified navbar
   if (!user) {
-    return null;
+    return (
+      <nav className="bg-white shadow fixed w-full z-10">
+        <div className="w-[512px] mx-auto px-4">
+          <div className="flex justify-between h-16">
+            <div className="flex">
+              <div className="flex-shrink-0 flex items-center">
+                <Link to="/" className="text-xl font-bold text-blue-600">
+                  SendTrend
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+    );
   }
   
   return (
     <nav className="bg-white shadow fixed w-full z-10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-[512px] mx-auto px-4">
         <div className="flex justify-between h-16">
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">

@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom'; // Import Link from react-router-dom
 import { supabase } from '../supabase';
+import { Navbar } from './Navbar';
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
@@ -58,12 +59,10 @@ export default function Login() {
       setLoading(true);
       setMessage(null);
       
-      const siteUrl = import.meta.env.VITE_PUBLIC_URL || window.location.origin;
-      
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: siteUrl
+          redirectTo: window.location.origin
         }
       });
       
@@ -81,8 +80,9 @@ export default function Login() {
   };
   
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
+    <>
+      <Navbar />
+      <div className="py-12">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             {isSignUp ? 'Create your account' : 'Sign in to your account'}
@@ -104,7 +104,7 @@ export default function Login() {
         </div>
         
         {message && (
-          <div className={`rounded-md p-4 ${
+          <div className={`rounded-md p-4 mt-4 ${
             message.type === 'success' ? 'bg-green-50' : 'bg-red-50'
           }`}>
             <p className={`text-sm ${
@@ -116,7 +116,7 @@ export default function Login() {
         )}
         
         {/* Google Sign In Button */}
-        <div>
+        <div className="mt-4">
           <button
             type="button"
             onClick={handleGoogleSignIn}
@@ -132,7 +132,7 @@ export default function Login() {
           </button>
         </div>
         
-        <div className="relative">
+        <div className="relative mt-4">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-gray-300"></div>
           </div>
@@ -173,7 +173,7 @@ export default function Login() {
             </div>
           </div>
           
-          {/* Add Forgot Password Link - This was missing! */}
+          {/* Add Forgot Password Link */}
           {!isSignUp && (
             <div className="flex items-center justify-end">
               <Link
@@ -200,6 +200,6 @@ export default function Login() {
           </div>
         </form>
       </div>
-    </div>
+    </>
   );
 }

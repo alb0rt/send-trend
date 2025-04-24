@@ -76,7 +76,7 @@ export default function ClimbingProgressChart({ stackedBarData, categoriesMap })
 
   return (
     <div className="bg-white p-4 rounded-lg shadow mb-6">
-      <h3 className="text-lg font-semibold mb-4">Your Climbing Progress</h3>
+      <h3 className="text-lg font-semibold mb-4">Your Recent Sessions</h3>
       {stackedBarData.length > 0 ? (
         <div className="h-80">
           <ResponsiveContainer width="100%" height="100%">

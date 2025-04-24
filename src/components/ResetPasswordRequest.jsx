@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../supabase';
+import { Navbar } from './Navbar';
 
 export default function ResetPasswordRequest() {
   const [email, setEmail] = useState('');
@@ -48,8 +49,9 @@ export default function ResetPasswordRequest() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
+    <>
+      <Navbar />
+      <div className="py-12">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             Reset your password
@@ -60,7 +62,7 @@ export default function ResetPasswordRequest() {
         </div>
         
         {message && (
-          <div className={`rounded-md p-4 ${
+          <div className={`rounded-md p-4 mt-4 ${
             message.type === 'success' ? 'bg-green-50' : 'bg-red-50'
           }`}>
             <p className={`text-sm ${
@@ -98,12 +100,12 @@ export default function ResetPasswordRequest() {
           </div>
         </form>
         
-        <div className="text-center">
+        <div className="text-center mt-4">
           <Link to="/login" className="font-medium text-blue-600 hover:text-blue-500">
             Back to login
           </Link>
         </div>
       </div>
-    </div>
+    </>
   );
 }

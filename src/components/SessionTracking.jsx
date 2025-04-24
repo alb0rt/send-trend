@@ -100,19 +100,12 @@ export default function SessionTracking() {
         
       if (error) throw error;
       
-      // Update local state and re-sort categories
+      // Update local state
       if (data && data.length > 0) {
-        const updatedCategories = [...routeCategories, data[0]];
-         const sortedUpdatedCategories = updatedCategories.sort((a, b) => {
-            const diffA = a.difficulty_index ?? Infinity;
-            const diffB = b.difficulty_index ?? Infinity;
-            return diffA - diffB;
-         });
-        setRouteCategories(sortedUpdatedCategories); // Set the newly sorted categories
+        setRouteCategories([...routeCategories, data[0]]);
         setShowNewCategoryForm(false);
         setNewCategory({ name: '', difficulty_index: 1, notes: '' });
       }
-      
     } catch (error) {
       console.error('Error adding route category:', error);
       setError('Failed to add route category');
@@ -188,12 +181,12 @@ export default function SessionTracking() {
   };
 
   if (loading && !sessionDetails) {
-    return <div className="text-center p-8">Loading session data...</div>;
+    return <div className="w-full py-6 text-center">Loading session data...</div>;
   }
 
   if (error) {
     return (
-      <div className="text-center p-8">
+      <div className="w-full py-6 text-center">
         <p className="text-red-500">{error}</p>
         <button 
           onClick={() => navigate('/')} 
@@ -206,7 +199,7 @@ export default function SessionTracking() {
   }
 
   return (
-    <div className="max-w-xl mx-auto p-4">
+    <div className="py-6">
       {sessionDetails && (
         <div className="mb-6">
           <h2 className="text-2xl font-bold">Climbing Session</h2>
@@ -219,7 +212,7 @@ export default function SessionTracking() {
         </div>
       )}
       
-      <div className="mb-6">
+      <div className="bg-white p-6 rounded-lg shadow-md w-full mb-6">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-xl font-semibold">Routes</h3>
           <button
@@ -395,7 +388,7 @@ export default function SessionTracking() {
         </div>
       </div>
       
-      <div className="mb-6">
+      <div className="bg-white p-6 rounded-lg shadow-md w-full mb-6">
         <label className="block text-gray-700 mb-2">Session Notes</label>
         <textarea
           value={notes}
