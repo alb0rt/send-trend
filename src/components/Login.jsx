@@ -58,10 +58,12 @@ export default function Login() {
       setLoading(true);
       setMessage(null);
       
+      const siteUrl = import.meta.env.VITE_PUBLIC_URL || window.location.origin;
+      
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: window.location.origin
+          redirectTo: siteUrl
         }
       });
       
