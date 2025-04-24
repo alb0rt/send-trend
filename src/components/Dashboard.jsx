@@ -210,62 +210,64 @@ export default function Dashboard() {
 
         setDifficultyDistribution(formattedDifficultyData);
 
-       // Process data for stacked bar chart (routes completed by date and difficulty index)
-      const progressByDateAndDifficulty = {};
+        // Process data for stacked bar chart (routes completed by date and difficulty index)
+        const progressByDateAndDifficulty = {};
 
-      allSessionsData.forEach(session => {
-        const dateStr = session.date;
-        const dateObj = parseISO(dateStr);
+        allSessionsData.forEach(session => {
+          const dateStr = session.date;
+          const dateObj = parseISO(dateStr);
+          const gymName = session.gyms ? `${session.gyms.name} - ${session.gyms.location}` : 'Unknown Gym';
 
-        if (!progressByDateAndDifficulty[dateStr]) {
-          progressByDateAndDifficulty[dateStr] = {
-            date: dateStr,
-            formattedDate: format(dateObj, 'MMM d'),
-            difficultyMap: {},  // Maps the difficulty index to the category id
-            totalDifficultySum: 0,
-            totalRoutes: 0,
-            averageDifficulty: 0
-          };
-        }
+          if (!progressByDateAndDifficulty[dateStr]) {
+            progressByDateAndDifficulty[dateStr] = {
+              date: dateStr,
+              formattedDate: format(dateObj, 'MMM d'),
+              gymName: gymName,  // Add gym information here
+              difficultyMap: {},  // Maps the difficulty index to the category id
+              totalDifficultySum: 0,
+              totalRoutes: 0,
+              averageDifficulty: 0
+            };
+          }
 
-        if (session.session_routes) {
-          session.session_routes.forEach(route => {
-            if (route.unique_routes_completed > 0) {
-              const completedCount = route.unique_routes_completed;
-              const category = categoriesMap[route.route_category_id];
+          if (session.session_routes) {
+            session.session_routes.forEach(route => {
+              if (route.unique_routes_completed > 0) {
+                const completedCount = route.unique_routes_completed;
+                const category = categoriesMap[route.route_category_id];
 
-              if (category && category.difficulty_index) {
-                const difficultyIndex = category.difficulty_index;
+                if (category && category.difficulty_index) {
+                  const difficultyIndex = category.difficulty_index;
 
-                // Store using the difficulty index as the key instead of the name
-                if (!progressByDateAndDifficulty[dateStr][difficultyIndex]) {
-                  progressByDateAndDifficulty[dateStr][difficultyIndex] = 0;
+                  // Store using the difficulty index as the key instead of the name
+                  if (!progressByDateAndDifficulty[dateStr][difficultyIndex]) {
+                    progressByDateAndDifficulty[dateStr][difficultyIndex] = 0;
+                  }
+                  progressByDateAndDifficulty[dateStr][difficultyIndex] += completedCount;
+
+                  // Store the mapping from difficulty index to category id for tooltip display
+                  progressByDateAndDifficulty[dateStr].difficultyMap[difficultyIndex] = route.route_category_id;
+
+                  // Add to difficulty sum for average calculation
+                  progressByDateAndDifficulty[dateStr].totalDifficultySum += (difficultyIndex * completedCount);
+                  progressByDateAndDifficulty[dateStr].totalRoutes += completedCount;
                 }
-                progressByDateAndDifficulty[dateStr][difficultyIndex] += completedCount;
-
-                // Store the mapping from difficulty index to category id for tooltip display
-                progressByDateAndDifficulty[dateStr].difficultyMap[difficultyIndex] = route.route_category_id;
-
-                // Add to difficulty sum for average calculation
-                progressByDateAndDifficulty[dateStr].totalDifficultySum += (difficultyIndex * completedCount);
-                progressByDateAndDifficulty[dateStr].totalRoutes += completedCount;
               }
-            }
-          });
-        }
+            });
+          }
 
-        // Calculate average difficulty for each day
-        if (progressByDateAndDifficulty[dateStr].totalRoutes > 0) {
-          progressByDateAndDifficulty[dateStr].averageDifficulty =
-            +(progressByDateAndDifficulty[dateStr].totalDifficultySum /
-              progressByDateAndDifficulty[dateStr].totalRoutes).toFixed(1);
-        }
-      });
+          // Calculate average difficulty for each day
+          if (progressByDateAndDifficulty[dateStr].totalRoutes > 0) {
+            progressByDateAndDifficulty[dateStr].averageDifficulty =
+              +(progressByDateAndDifficulty[dateStr].totalDifficultySum /
+                progressByDateAndDifficulty[dateStr].totalRoutes).toFixed(1);
+          }
+        });
 
-      const formattedStackedBarData = Object.values(progressByDateAndDifficulty)
-        .sort((a, b) => a.date.localeCompare(b.date));
+        const formattedStackedBarData = Object.values(progressByDateAndDifficulty)
+          .sort((a, b) => a.date.localeCompare(b.date));
 
-      setStackedBarData(formattedStackedBarData);
+        setStackedBarData(formattedStackedBarData);
 
 
         // Calculate average routes per day of week
@@ -438,49 +440,53 @@ export default function Dashboard() {
     return null;
   };
 
-  // Custom tooltip for the stacked bar chart (Routes by Difficulty Over Time)
-  const CustomStackedBarTooltip = ({ active, payload, label, categoriesMap }) => {
-      if (active && payload && payload.length) {
-        // Find the data for the current date label
-        const dateData = stackedBarData.find(d => d.formattedDate === label);
 
-        return (
-          <div className="bg-white p-3 border rounded shadow-sm">
-            <p className="text-sm font-medium">{label}</p>
-            {payload.map((entry, index) => {
-              // Only show tooltip entries for the Bar data (which are numeric difficulty indices)
-              if (!isNaN(parseInt(entry.dataKey))) {
-                 // Find the corresponding category name using categoriesMap
-                const categoryId = dateData?.difficultyMap?.[entry.dataKey];
-                const category = categoriesMap?.[categoryId];
-                const displayName = category?.name || `Difficulty ${entry.dataKey}`;
+    // Custom tooltip for the stacked bar chart (Routes by Difficulty Over Time)
+  const CustomStackedBarTooltip = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    // Find the data for the current date label
+    const dateData = stackedBarData.find(d => d.formattedDate === label);
 
-                return (
-                  <p
-                    key={`item-${index}`}
-                    className="text-sm"
-                    style={{ color: entry.color }}
-                  >
-                    {displayName}: {entry.value}
-                  </p>
-                );
-              }
-               // Also display average difficulty in the tooltip if it's in the payload
-              if (entry.dataKey === 'averageDifficulty') {
-                  return (
-                     <p key={`item-${index}`} className="text-sm" style={{ color: entry.color }}>
-                       {entry.name}: {entry.value}
-                     </p>
-                   );
-               }
-              return null; // Hide other payload entries (like the Line data if it appears here unexpectedly)
-            })}
-          </div>
-        );
-      }
-      return null;
-    };
+    return (
+      <div className="bg-white p-3 border rounded shadow-sm">
+        <p className="text-sm font-medium">{label}</p>
+        {/* Display gym information if available */}
+        {dateData?.gymName && (
+          <p className="text-xs text-gray-600 mb-1">{dateData.gymName}</p>
+        )}
+        {payload.map((entry, index) => {
+          // Only show tooltip entries for the Bar data (which are numeric difficulty indices)
+          if (!isNaN(parseInt(entry.dataKey))) {
+            // Find the corresponding category name using categoriesMap
+            const categoryId = dateData?.difficultyMap?.[entry.dataKey];
+            const category = categoriesMap?.[categoryId];
+            const displayName = category?.name || `Difficulty ${entry.dataKey}`;
 
+            return (
+              <p
+                key={`item-${index}`}
+                className="text-sm"
+                style={{ color: entry.color }}
+              >
+                {displayName}: {entry.value}
+              </p>
+            );
+          }
+          // Also display average difficulty in the tooltip if it's in the payload
+          if (entry.dataKey === 'averageDifficulty') {
+            return (
+              <p key={`item-${index}`} className="text-sm" style={{ color: entry.color }}>
+                {entry.name}: {entry.value}
+              </p>
+            );
+          }
+          return null; // Hide other payload entries
+        })}
+      </div>
+    );
+  }
+  return null;
+};
 
   return (
     <div className="max-w-4xl mx-auto p-4">
