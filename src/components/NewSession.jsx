@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 export default function NewSession() {
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [gyms, setGyms] = useState([]);
+  const [recentlyUsedGyms, setRecentlyUsedGyms] = useState([]);
   const [selectedGym, setSelectedGym] = useState('');
   const [showNewGymForm, setShowNewGymForm] = useState(false);
   const [newGym, setNewGym] = useState({ name: '', location: '' });
@@ -14,31 +15,82 @@ export default function NewSession() {
   
   const navigate = useNavigate();
 
-  // Fetch existing gyms on component mount
+  // Fetch existing gyms and recently used gyms on component mount
   useEffect(() => {
-    async function fetchGyms() {
+    async function fetchData() {
       try {
         setLoading(true);
-        const { data, error } = await supabase
+        
+        // Get current user
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) throw new Error('User not authenticated');
+
+        // Fetch all gyms
+        const { data: gymData, error: gymError } = await supabase
           .from('gyms')
           .select('id, name, location')
           .order('name');
           
-        if (error) throw error;
+        if (gymError) throw gymError;
+        setGyms(gymData || []);
         
-        setGyms(data || []);
-        if (data && data.length > 0) {
-          setSelectedGym(data[0].id);
+        // Fetch user's recent sessions to get recently used gyms
+        const { data: recentSessionsData, error: sessionsError } = await supabase
+          .from('climbing_sessions')
+          .select(`
+            id,
+            date,
+            gym_id,
+            gyms (
+              id,
+              name,
+              location
+            )
+          `)
+          .eq('user_id', user.id)
+          .order('date', { ascending: false })
+          .limit(10); // Get more than needed to ensure we have unique gyms
+          
+        if (sessionsError) throw sessionsError;
+        
+        // Extract unique recently used gyms (up to 3)
+        const recentGyms = [];
+        const recentGymIds = new Set();
+        
+        if (recentSessionsData) {
+          recentSessionsData.forEach(session => {
+            if (
+              session.gyms && 
+              !recentGymIds.has(session.gym_id) && 
+              recentGyms.length < 3
+            ) {
+              recentGyms.push({
+                id: session.gym_id,
+                name: session.gyms.name,
+                location: session.gyms.location
+              });
+              recentGymIds.add(session.gym_id);
+            }
+          });
+        }
+        
+        setRecentlyUsedGyms(recentGyms);
+        
+        // Set default selected gym (first recently used gym if available, otherwise first gym)
+        if (recentGyms.length > 0) {
+          setSelectedGym(recentGyms[0].id);
+        } else if (gymData && gymData.length > 0) {
+          setSelectedGym(gymData[0].id);
         }
       } catch (error) {
-        console.error('Error fetching gyms:', error);
+        console.error('Error fetching data:', error);
         setError('Failed to load gyms');
       } finally {
         setLoading(false);
       }
     }
     
-    fetchGyms();
+    fetchData();
   }, []);
 
   // Handle creating a new gym
@@ -86,7 +138,7 @@ export default function NewSession() {
     try {
       setLoading(true);
       
-      // Get user ID (current implementation has a bug)
+      // Get user ID
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('User not authenticated');
       
@@ -160,11 +212,25 @@ export default function NewSession() {
                 <option value="">No gyms available</option>
               )}
               
-              {gyms.map((gym) => (
-                <option key={gym.id} value={gym.id}>
-                  {gym.name} - {gym.location}
-                </option>
-              ))}
+              {/* Recently Used Gyms Section */}
+              {recentlyUsedGyms.length > 0 && (
+                <optgroup label="Recently Used Gyms">
+                  {recentlyUsedGyms.map((gym) => (
+                    <option key={`recent-${gym.id}`} value={gym.id}>
+                      {gym.name} - {gym.location}
+                    </option>
+                  ))}
+                </optgroup>
+              )}
+              
+              {/* All Gyms Section */}
+              <optgroup label="All Gyms">
+                {gyms.map((gym) => (
+                  <option key={gym.id} value={gym.id}>
+                    {gym.name} - {gym.location}
+                  </option>
+                ))}
+              </optgroup>
             </select>
           </div>
         ) : (
