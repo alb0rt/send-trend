@@ -82,8 +82,8 @@ export default function Login() {
   return (
     <>
       <Navbar />
-      <div className="py-12">
-        <div>
+      <div className="pt-16 py-12 px-4">
+        <div className="w-[512px] mx-auto">
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             {isSignUp ? 'Create your account' : 'Sign in to your account'}
           </h2>

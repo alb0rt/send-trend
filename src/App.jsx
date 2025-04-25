@@ -68,7 +68,7 @@ function App() {
             </Routes>
           </Layout>
         ) : (
-          <div className="w-[512px] mx-auto px-4">
+          <div>
             <Routes>
               <Route path="/login" element={<Login />} />
               <Route path="/reset-password" element={<ResetPasswordRequest />} />

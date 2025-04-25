@@ -78,8 +78,8 @@ export function Navbar() {
   if (!user) {
     return (
       <nav className="bg-white shadow fixed w-full z-10">
-        <div className="w-[512px] mx-auto px-4">
-          <div className="flex justify-between h-16">
+        <div className="max-w-full mx-auto px-4">
+          <div className="flex justify-start h-16">
             <div className="flex">
               <div className="flex-shrink-0 flex items-center">
                 <Link to="/" className="text-xl font-bold text-blue-600">
