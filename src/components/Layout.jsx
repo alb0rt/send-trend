@@ -1,13 +1,14 @@
 import { Navbar } from './Navbar';
+import Container from './Container';
 
 export default function Layout({ children }) {
   return (
     <div>
       <Navbar />
       <div className="pt-16"> {/* Add padding top to account for fixed navbar */}
-        <div className="w-[512px] mx-auto px-4">
+        <Container>
           {children}
-        </div>
+        </Container>
       </div>
     </div>
   );

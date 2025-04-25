@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../supabase';
+import Container from './Container';
 
 export function Navbar() {
   const navigate = useNavigate();
@@ -78,7 +79,7 @@ export function Navbar() {
   if (!user) {
     return (
       <nav className="bg-white shadow fixed w-full z-10">
-        <div className="max-w-full mx-auto px-4">
+        <Container>
           <div className="flex justify-start h-16">
             <div className="flex">
               <div className="flex-shrink-0 flex items-center">
@@ -88,14 +89,14 @@ export function Navbar() {
               </div>
             </div>
           </div>
-        </div>
+        </Container>
       </nav>
     );
   }
   
   return (
     <nav className="bg-white shadow fixed w-full z-10">
-      <div className="w-[512px] mx-auto px-4">
+      <Container>
         <div className="flex justify-between h-16">
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
@@ -215,7 +216,7 @@ export function Navbar() {
             </button>
           </div>
         </div>
-      </div>
+      </Container>
 
       {/* Mobile menu */}
       <div className={`${menuOpen ? 'block' : 'hidden'} sm:hidden`}>

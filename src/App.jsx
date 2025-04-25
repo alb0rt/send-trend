@@ -68,14 +68,12 @@ function App() {
             </Routes>
           </Layout>
         ) : (
-          <div>
-            <Routes>
-              <Route path="/login" element={<Login />} />
-              <Route path="/reset-password" element={<ResetPasswordRequest />} />
-              <Route path="/reset-password/confirm" element={<ResetPasswordConfirm />} />
-              <Route path="*" element={<Navigate to="/login" />} />
-            </Routes>
-          </div>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/reset-password" element={<ResetPasswordRequest />} />
+            <Route path="/reset-password/confirm" element={<ResetPasswordConfirm />} />
+            <Route path="*" element={<Navigate to="/login" />} />
+          </Routes>
         )}
       </div>
     </Router>

@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../supabase';
 import { Navbar } from './Navbar';
+import Container from './Container';
 
 export default function ResetPasswordConfirm() {
   const [password, setPassword] = useState('');
@@ -85,76 +86,76 @@ export default function ResetPasswordConfirm() {
   return (
     <>
       <Navbar />
-      <div className="py-12">
-        <div>
+      <div className="pt-16 py-12">
+        <Container>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             Reset your password
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
             Please enter your new password below
           </p>
-        </div>
-        
-        {message && (
-          <div className={`rounded-md p-4 mt-4 ${
-            message.type === 'success' ? 'bg-green-50' : 'bg-red-50'
-          }`}>
-            <p className={`text-sm ${
-              message.type === 'success' ? 'text-green-800' : 'text-red-800'
-            }`}>
-              {message.text}
-            </p>
-          </div>
-        )}
-        
-        <form className="mt-8 space-y-6" onSubmit={handlePasswordReset}>
-          <div className="rounded-md shadow-sm -space-y-px">
-            <div>
-              <label htmlFor="password" className="sr-only">New Password</label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="new-password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                placeholder="New password"
-              />
-            </div>
-            <div>
-              <label htmlFor="confirm-password" className="sr-only">Confirm Password</label>
-              <input
-                id="confirm-password"
-                name="confirmPassword"
-                type="password"
-                autoComplete="new-password"
-                required
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                placeholder="Confirm new password"
-              />
-            </div>
-          </div>
           
-          <div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-blue-400"
-            >
-              {loading ? 'Updating...' : 'Reset Password'}
-            </button>
+          {message && (
+            <div className={`rounded-md p-4 mt-4 ${
+              message.type === 'success' ? 'bg-green-50' : 'bg-red-50'
+            }`}>
+              <p className={`text-sm ${
+                message.type === 'success' ? 'text-green-800' : 'text-red-800'
+              }`}>
+                {message.text}
+              </p>
+            </div>
+          )}
+          
+          <form className="mt-8 space-y-6" onSubmit={handlePasswordReset}>
+            <div className="rounded-md shadow-sm -space-y-px">
+              <div>
+                <label htmlFor="password" className="sr-only">New Password</label>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  autoComplete="new-password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                  placeholder="New password"
+                />
+              </div>
+              <div>
+                <label htmlFor="confirm-password" className="sr-only">Confirm Password</label>
+                <input
+                  id="confirm-password"
+                  name="confirmPassword"
+                  type="password"
+                  autoComplete="new-password"
+                  required
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                  placeholder="Confirm new password"
+                />
+              </div>
+            </div>
+            
+            <div>
+              <button
+                type="submit"
+                disabled={loading}
+                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-blue-400"
+              >
+                {loading ? 'Updating...' : 'Reset Password'}
+              </button>
+            </div>
+          </form>
+          
+          <div className="text-center mt-4">
+            <Link to="/login" className="font-medium text-blue-600 hover:text-blue-500">
+              Back to login
+            </Link>
           </div>
-        </form>
-        
-        <div className="text-center mt-4">
-          <Link to="/login" className="font-medium text-blue-600 hover:text-blue-500">
-            Back to login
-          </Link>
-        </div>
+        </Container>
       </div>
     </>
   );
