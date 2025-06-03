@@ -58,6 +58,7 @@ button:focus-visible {
 @tailwind components;
 @tailwind utilities;
 
+/* Force light mode for all elements to ensure consistency */
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
@@ -68,5 +69,26 @@ button:focus-visible {
   }
   button {
     background-color: #f9f9f9;
+  }
+}
+
+/* Override dark mode to use light mode styles */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color: #213547 !important;
+    background-color: #ffffff !important;
+  }
+  
+  body {
+    color: #213547 !important;
+    background-color: #ffffff !important;
+  }
+  
+  a:hover {
+    color: #747bff !important;
+  }
+  
+  button {
+    background-color: #f9f9f9 !important;
   }
 }
